@@ -7,7 +7,27 @@
 """
 
 import os
+from errorCode import ErrorCode
+
+error = ErrorCode()
+
 
 class PlacementRule(object):
     def __init__(self):
+        pass
+
+
+    def checkPlacementRule(self, placementRuleNum, isAllyExistNum, isEnemyExistNum, isExtraExistNum, gameBoard, dataBoard):
+        pass
+
+
+    def applyAllyExistRule(self):
+        pass
+
+
+    def applyEnemyExistRule(self):
+        pass
+
+
+    def applyExtraExistRule(self):
         pass

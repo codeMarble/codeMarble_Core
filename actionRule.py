@@ -7,6 +7,10 @@
 """
 
 import os
+from errorCode import ErrorCode
+
+error = ErrorCode()
+
 
 class ActionRule(object):
     def __init__(self):
