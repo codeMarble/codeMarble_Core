@@ -15,3 +15,15 @@ error = ErrorCode()
 class ActionRule(object):
     def __init__(self):
         pass
+
+
+    def checkActionRule(self, actionRuleNum, actionRuleOption, gameBoard, dataBoard):
+        pass
+
+
+    def removeObject(self):
+        pass
+
+
+    def changeObject(self):
+        pass

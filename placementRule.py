@@ -17,7 +17,8 @@ class PlacementRule(object):
         pass
 
 
-    def checkPlacementRule(self, placementRuleNum, isAllyExistNum, isEnemyExistNum, isExtraExistNum, gameBoard, dataBoard):
+    def checkPlacementRule(self, placementRuleNum, placementRuleOption, isAllyExistNum, allyExistOption, isEnemyExistNum,
+                           enemyExistOption, isExtraExistNum, extraExistOption, gameBoard, dataBoard):
         pass
 
 
