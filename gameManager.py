@@ -7,11 +7,15 @@
 """
 
 import os
+import sys
 from execution import Execution
 
 
-class gameManager(object):
-    def __init__(self, challenger, champion, gameStyle, gameBoard):
+class GameManager(object):
+    def __init__(self, challenger, champion, gameStyle, gameBoard, scriptPath, problemIndex='scriptTemplate'):
+        sys.path.insert(0, scriptPath)
+        exec 'from %s import UserRules' % (problemIndex)
+
         # parameter setting
         self.challenger = challenger
         self.champion = champion
