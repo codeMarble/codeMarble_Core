@@ -13,11 +13,17 @@ class ErrorCode(object):
     def __init__(self):
         pass
 
-    def missPosition(self):
-        return 'miss position'
+    def missPosition(self, row, col):
+        return 'miss position(%d, %d)' % (row, col)
 
     def timeover(self):
         return 'time over'
 
-    def outOfRange(self):
-        return 'out of range'
+    def outputError(self):
+        return 'output '
+
+    def typeError(self):
+        return 'not correct type'
+
+    def serverError(self):
+        return 'server error'

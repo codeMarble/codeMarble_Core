@@ -7,3 +7,11 @@ install:
   #- python setup.py install
 
 script:
+#
+
+notifications:
+  email:
+    recipients:
+      - dollking@kookmin.ac.kr
+    on_success: always
+    on_failure: always
