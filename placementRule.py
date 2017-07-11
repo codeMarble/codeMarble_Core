@@ -16,6 +16,7 @@ class PlacementRule(object):
     def __init__(self):
         pass
 
+
     # placementRuleNum(0:script, 1:add, 2:move), placementRuleOption([0]:no option, [1or2]: add option, [n1,n2]: move option)
     # isAllyExistNum, isEnemyExistNum, isExtraExistNum(1:don't placement, 2:remove, 3:modify)
     # existOption([1or2]:remove option, [n1,n2]:modify option)
@@ -36,7 +37,7 @@ class PlacementRule(object):
             for i in range(checkSize):
                 tr, tc = row + direct[i][0], col + direct[i][1]
                 if (tr < matrixRange and tr >= 0) and (tc < matrixRange and tc >= 0):
-                    if gameBoard[tr][tc] > 0:
+                    if gameBoard[tr][tc] > 0 and gameBoard[tr][tc] < 4:
                         break
             else:
                 return error.missPosition(row, col)
@@ -52,7 +53,7 @@ class PlacementRule(object):
 
         else:
             return error.serverError
-        self.additionalExtraExistRule.im
+
         try:
             if self.applyAllyExistRule(placementRuleNum, placementRuleOption, isAllyExistNum, allyExistOption, isEnemyExistNum,
                                        enemyExistOption, isExtraExistNum, extraExistOption, gameBoard, dataBoard, pos):
@@ -60,7 +61,7 @@ class PlacementRule(object):
                                             isEnemyExistNum, enemyExistOption, isExtraExistNum, extraExistOption, gameBoard, dataBoard, pos):
                     if self.applyExtraExistRule(placementRuleNum, placementRuleOption, isAllyExistNum, allyExistOption,
                                                 isEnemyExistNum, enemyExistOption, isExtraExistNum, extraExistOption, gameBoard, dataBoard, pos):
-                        return True
+                        return [row, col]
 
             return False
 

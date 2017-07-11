@@ -57,20 +57,26 @@ class GameManager(object):
         userList = [[self.champion, 0], [self.challenger, 0]]
 
         for _ in range(len(self.gameBoard)*len(self.gameBoard)*2):
-            pos, time, isSuccess = userList[flag][0].play()  # run user program
+            message, time, isSuccess = userList[flag][0].play()  # run user program
 
             if not isSuccess or time > self.limitTime:
                 userList[flag][1] += 1
+                result = message
 
             else:
-                if self.rules.checkPlacementRule(self.placementRuleNum, self.placementRuleOption, self.isAllyExistNum,
-                                                 self.allyExistOption, self.isEnemyExistNum, self.enemyExistOption,
-                                                 self.isExtraExistNum, self.extraExistOption, self.gameBoard,
-                                                 self.dataBoard, pos).im_class is not ErrorCode:
+                result = self.rules.checkPlacementRule(self.placementRuleNum, self.placementRuleOption, self.isAllyExistNum,
+                                                     self.allyExistOption, self.isEnemyExistNum, self.enemyExistOption,
+                                                     self.isExtraExistNum, self.extraExistOption, self.gameBoard,
+                                                     self.dataBoard, message)
 
-                    if self.rules.checkActionRule(self.actionRuleNum, self.actionRuleOption, self.gameBoard,
-                                                  self.dataBoard, pos).im_class is not ErrorCode:
-                        result = self.rules.checkEndingRule(self.endingRuleNum, self.placementRuleNum, self.endingRuleOption, pos)
+                if type(result) is list:
+                    placementPosition = result
+
+                    result = self.rules.checkActionRule(self.actionRuleNum, self.actionRuleOption1, self.actionRuleOption1,
+                                                        self.gameBoard, self.dataBoard, placementPosition)
+
+                    if result.im_class is not ErrorCode:
+                        result = self.rules.checkEndingRule(self.endingRuleNum, self.placementRuleNum, self.endingRuleOption, placementPosition)
 
                         if type(result) is str:
                             return result
@@ -82,7 +88,7 @@ class GameManager(object):
                 return 'Win' if flag else 'Lose'
 
             # change boarad setting (champ <-> challenger)
-            self.changePlayerNBoard(flag, pos)
+            self.changePlayerNBoard(flag, result)
             flag = (not flag)
 
         return "Draw"
