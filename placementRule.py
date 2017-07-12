@@ -17,19 +17,22 @@ class PlacementRule(object):
         pass
 
 
-    # placementRuleNum(0:script, 1:add, 2:move), placementRuleOption([0]:no option, [1or2]: add option, [n1,n2]: move option)
+    # placementRuleNum(0:script, 1:add, 2:move), placementRuleOption(0:no option, 1or2: add option, [n1,n2]: move option)
     # isAllyExistNum, isEnemyExistNum, isExtraExistNum(1:don't placement, 2:remove, 3:modify)
     # existOption([1or2]:remove option, [n1,n2]:modify option)
     def checkPlacementRule(self, placementRuleNum, placementRuleOption, isAllyExistNum, allyExistOption, isEnemyExistNum,
-                           enemyExistOption, isExtraExistNum, extraExistOption, gameBoard, dataBoard, pos):
+                           enemyExistOption, isExtraExistNum, extraExistOption, gameBoard, dataBoard, message):
         matrixRange = len(gameBoard)
 
         if placementRuleNum is 1:
+            if type(placementRuleOption) is not int:
+                return error.serverError()
+
             direct = [[1,0], [-1,0], [0,1], [0,-1], [1,1], [-1,1], [-1,-1], [1,-1]]
-            checkSize = 4 if placementRuleOption[0] is 1 else 8
+            checkSize = 4 if placementRuleOption is 1 else 8
 
             try:
-                row, col = [int(i) for i in pos.split()]
+                row, col = [int(i) for i in message.split()]
 
             except Exception as e:
                 return error.outputError
@@ -43,8 +46,11 @@ class PlacementRule(object):
                 return error.missPosition(row, col)
 
         elif placementRuleNum is 2:
+            if type(placementRuleOption) is not list:
+                return error.serverError()
+
             try:
-                posData = pos.split('>')
+                posData = message.split('>')
                 row1, col1 = [int(i) for i in posData[0].split()]
                 row2, col2 = [int(i) for i in posData[1].split()]
 
@@ -56,11 +62,11 @@ class PlacementRule(object):
 
         try:
             if self.applyAllyExistRule(placementRuleNum, placementRuleOption, isAllyExistNum, allyExistOption, isEnemyExistNum,
-                                       enemyExistOption, isExtraExistNum, extraExistOption, gameBoard, dataBoard, pos):
+                                       enemyExistOption, isExtraExistNum, extraExistOption, gameBoard, dataBoard, [row, col]):
                 if self.applyEnemyExistRule(placementRuleNum, placementRuleOption, isAllyExistNum, allyExistOption,
-                                            isEnemyExistNum, enemyExistOption, isExtraExistNum, extraExistOption, gameBoard, dataBoard, pos):
+                                            isEnemyExistNum, enemyExistOption, isExtraExistNum, extraExistOption, gameBoard, dataBoard, [row, col]):
                     if self.applyExtraExistRule(placementRuleNum, placementRuleOption, isAllyExistNum, allyExistOption,
-                                                isEnemyExistNum, enemyExistOption, isExtraExistNum, extraExistOption, gameBoard, dataBoard, pos):
+                                                isEnemyExistNum, enemyExistOption, isExtraExistNum, extraExistOption, gameBoard, dataBoard, [row, col]):
                         return [row, col]
 
             return False
