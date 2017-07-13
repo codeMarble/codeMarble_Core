@@ -17,15 +17,15 @@ class ActionRule(object):
         pass
 
 
-    # actionRuleNum(0:script, 1:remove, 2:change), actionRuleOption1(0:script, 1:4direction, 2:8direction, 3:othello, 4:go)
-    # actionRuleOption2(n:size)
+    # actionRuleNum(0:script, 1:remove, 2:change), actionRuleOption1(0:script, 1:4direction, 2:8direction, 3:go)
+    # actionRuleOption2(0:othello, n:size)
     def checkActionRule(self, actionRuleNum, actionRuleOption1, actionRuleOption2, gameBoard, dataBoard, pos):
         pass
 
 
-    def removeObject(self):
+    def removeObject(self, actionRuleNum, actionRuleOption1, actionRuleOption2, gameBoard, dataBoard, pos):
         pass
 
 
-    def changeObject(self):
+    def changeObject(self, actionRuleNum, actionRuleOption1, actionRuleOption2, gameBoard, dataBoard, pos):
         pass
