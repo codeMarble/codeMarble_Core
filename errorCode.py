@@ -16,6 +16,9 @@ class ErrorCode(object):
     def missPosition(self, row, col):
         return 'miss position(%d, %d)' % (row, col)
 
+    def outOfRange(self, row, col):
+        return 'out of range(%d, %d)' % (row, col)
+
     def timeover(self):
         return 'time over'
 

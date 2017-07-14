@@ -19,7 +19,7 @@ class ActionRule(object):
 
     # actionRuleNum(0:script, 1:remove, 2:change), actionRuleOption1(0:script, 1:4direction, 2:8direction, 3:go)
     # actionRuleOption2(0:othello, n:size)
-    def checkActionRule(self, actionRuleNum, actionRuleOption1, actionRuleOption2, gameBoard, dataBoard, pos):
+    def checkActionRule(self, data):
         pass
 
 

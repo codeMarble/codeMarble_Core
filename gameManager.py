@@ -8,7 +8,10 @@
 
 import os
 import sys
+
+
 from execution import Execution
+from gameData import GameData
 from userProgram import UserProgram
 from scriptTemplate import UserRule
 from errorCode import ErrorCode
@@ -16,8 +19,9 @@ from errorCode import ErrorCode
 
 class GameManager(object):
     def __init__(self, challenger, champion, placementRuleNum, placementRuleOption, isAllyExistNum, allyExistOption,
-                 isEnemyExistNum, enemyExistOption, isExtraExistNum, extraExistOption, actionRuleNum, actionRuleOption,
-                 gameBoard, dataBoard, endingRuleNum, endingRuleOption, scriptPath, limitTime, problemIndex='scriptTemplate'):
+                 isEnemyExistNum, enemyExistOption, isExtraExistNum, extraExistOption, actionRuleNum, actionRuleOption1,
+                 actionRuleOption2, gameBoard, dataBoard, endingRuleNum, endingRuleOption, scriptPath, limitTime,
+                 problemIndex='scriptTemplate'):
         if type(challenger) is not UserProgram and type(champion) is not UserProgram:
             raise TypeError
 
@@ -28,20 +32,10 @@ class GameManager(object):
         self.challenger = challenger
         self.champion = champion
 
-        self.placementRuleNum = placementRuleNum
-        self.placementRuleOption = placementRuleOption
-        self.isAllyExistNum = isAllyExistNum
-        self.allyExistOption = allyExistOption
-        self.isEnemyExistNum = isEnemyExistNum
-        self.enemyExistOption = enemyExistOption
-        self.isExtraExistNum = isExtraExistNum
-        self.extraExistOption = extraExistOption
-        self.actionRuleNum = actionRuleNum
-        self.actionRuleOption = actionRuleOption
-        self.endingRuleNum = endingRuleNum
-        self.endingRuleOption = endingRuleOption
-        self.gameBoard = gameBoard
-        self.dataBoard = dataBoard
+        self.data = GameData(placementRuleNum, placementRuleOption, isAllyExistNum, allyExistOption, isEnemyExistNum,
+                 enemyExistOption, isExtraExistNum, extraExistOption, actionRuleNum, actionRuleOption1, actionRuleOption2,
+                 endingRuleNum, endingRuleOption, gameBoard, dataBoard)
+
         self.limitTime = limitTime
 
         self.positionData = ''
@@ -58,25 +52,22 @@ class GameManager(object):
 
         for _ in range(len(self.gameBoard)*len(self.gameBoard)*2):
             message, time, isSuccess = userList[flag][0].play()  # run user program
+            self.data.message = message
 
             if not isSuccess or time > self.limitTime:
                 userList[flag][1] += 1
                 result = message
 
             else:
-                result = self.rules.checkPlacementRule(self.placementRuleNum, self.placementRuleOption, self.isAllyExistNum,
-                                                     self.allyExistOption, self.isEnemyExistNum, self.enemyExistOption,
-                                                     self.isExtraExistNum, self.extraExistOption, self.gameBoard,
-                                                     self.dataBoard, message)
+                result = self.rules.checkPlacementRule(self.data)
 
                 if type(result) is list:
-                    placementPosition = result
+                    self.data.pos = result
 
-                    result = self.rules.checkActionRule(self.actionRuleNum, self.actionRuleOption1, self.actionRuleOption1,
-                                                        self.gameBoard, self.dataBoard, placementPosition)
+                    result = self.rules.checkActionRule(self.data)
 
                     if result.im_class is not ErrorCode:
-                        result = self.rules.checkEndingRule(self.endingRuleNum, self.placementRuleNum, self.endingRuleOption, placementPosition)
+                        result = self.rules.checkEndingRule(self.data)
 
                         if type(result) is str:
                             return result
