@@ -10,9 +10,9 @@ import os
 import sys
 
 class GameData(object):
-    def __init__(self, placementRuleNum, placementRuleOption, isAllyExistNum, allyExistOption, isEnemyExistNum,
-                 enemyExistOption, isExtraExistNum, extraExistOption, actionRuleNum, actionRuleOption1, actionRuleOption2,
-                 endingRuleNum, endingRuleOption, gameBoard, dataBoard):
+    def __init__(self, userObjectCount, placementRuleNum, placementRuleOption, isAllyExistNum, allyExistOption,
+                 isEnemyExistNum, enemyExistOption, isExtraExistNum, extraExistOption, actionRuleNum, actionRuleOption1,
+                 actionRuleOption2, endingRuleNum, endingRuleOption, gameBoard, dataBoard):
         self.placementRuleNum = placementRuleNum
         self.placementRuleOption = placementRuleOption
         self.isAllyExistNum = isAllyExistNum
@@ -26,6 +26,7 @@ class GameData(object):
         self.actionRuleOption2 = actionRuleOption2
         self.endingRuleNum = endingRuleNum
         self.endingRuleOption = endingRuleOption
+        self.userObjectCount = userObjectCount
 
 
         self.gameBoard = gameBoard
@@ -33,3 +34,4 @@ class GameData(object):
 
         self.message = None
         self.pos = None
+        self.postPos = None
