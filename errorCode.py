@@ -28,5 +28,5 @@ class ErrorCode(object):
     def typeError(self):
         return 'not correct type'
 
-    def serverError(self):
-        return 'server error'
+    def serverError(self, cmd=''):
+        return 'server error ' + cmd
