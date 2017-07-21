@@ -23,11 +23,11 @@ class ActionRule(object):
             if type(data.actionRuleNum) is not int:
                 return error.serverError('type not matched.')
 
-            if actionRuleNum is 1:
-                return self.removeObject(data.actionRuleNum)
+            if data.actionRuleNum is 1:
+                return self.removeObject(data)
 
-            elif actionRuleNum is 2:
-                return self.changeObject(data.actionRuleNum)
+            elif data.actionRuleNum is 2:
+                return self.changeObject(data)
 
             else:
                 return error.serverError('unknown actionRuleNum : {}'.format(data.actionRuleNum))
@@ -43,7 +43,7 @@ class ActionRule(object):
             if type(data.actionRuleOption1) != int or type(data.actionRuleOption2) != int or type(data.pos[0]) != int or type(data.pos[1]) != int:
                 return error.serverError('type not matched.')
 
-            elif len(data.gameBoard) !=  len(data.gameBoard[0]):
+            elif len(data.gameBoard) != len(data.gameBoard[0]):
                 return error.serverError('gameboard size not matched. [row : {}, col : {}]'.format(len(data.gameBoard), len(data.gameBoard[0])))
 
             if data.actionRuleOption2 > len(data.gameBoard):
@@ -52,11 +52,11 @@ class ActionRule(object):
 
             if 1 <= data.actionRuleOption1 <= 3: # remove size or othello
                 if data.actionRuleOption2 == 0: # othello
-                    return self.actionObjectByOthello(data.gameBoard, pos, 0)
+                    return self.actionObjectByOthello(data.gameBoard, data.pos, 0)
                 else: # size
-                    return self.actionObjectBySize(data.gameBoard, pos, data.actionRuleOption2, 0)
+                    return self.actionObjectBySize(data.gameBoard, data.pos, data.actionRuleOption2, 0)
             elif data.actionRuleOption1 == 4:  # remove go rule
-                return self.actionObjectByGo(gameBoard, data.pos, 0)
+                return self.actionObjectByGo(data.gameBoard, data.pos, 0)
             else:
                 return error.serverError('unknown actionRuleOption1 : {}'.format(data.actionRuleOption1))
 
@@ -68,7 +68,7 @@ class ActionRule(object):
         me = board[pi][pj]
         you = -me
 
-        goRule = GoRule()
+        goRule = self.GoRule()
 
         yous = goRule.findYou(board, pos)
         for (i, j) in yous:
@@ -139,8 +139,7 @@ class ActionRule(object):
 
             elif len(data.gameBoard) != len(data.gameBoard[0]):
                 return error.serverError('gameboard size not matched. [row : {}, col : {}]'.format(len(data.gameBoard),
-                                                                                                   len(data.gameBoard[
-                                                                                                           0])))
+                                                                                                   len(data.gameBoard[0])))
 
             if data.actionRuleOption2 > len(data.gameBoard):
                 return error.serverError(
@@ -149,11 +148,11 @@ class ActionRule(object):
 
             if 1 <= data.actionRuleOption1 <= 3:  # remove size or othello
                 if data.actionRuleOption2 == 0:  # othello
-                    return self.actionObjectByOthello(data.gameBoard, pos, data.gameBoard[pos[0]][pos[1]])
+                    return self.actionObjectByOthello(data.gameBoard, data.pos, data.gameBoard[data.pos[0]][data.pos[1]])
                 else:  # size
-                    return self.actionObjectBySize(data.gameBoard, pos, data.actionRuleOption2, data.gameBoard[pos[0]][pos[1]])
+                    return self.actionObjectBySize(data.gameBoard, data.pos, data.actionRuleOption2, data.gameBoard[data.pos[0]][data.pos[1]])
             elif data.actionRuleOption1 == 4:  # remove go rule
-                return self.actionObjectByGo(gameBoard, data.pos, data.gameBoard[pos[0]][pos[1]])
+                return self.actionObjectByGo(data.gameBoard, data.pos, data.gameBoard[data.pos[0]][data.pos[1]])
             else:
                 return error.serverError('unknown actionRuleOption1 : {}'.format(data.actionRuleOption1))
 

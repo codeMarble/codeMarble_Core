@@ -17,10 +17,9 @@ class EndingRule(object):
         pass
 
 
-    def checkEndingRule(self, endingRuleNum, placementRuleNum=None, endingRuleOption=None):
+    # endingRuleNum(1:checkRemove, 2:오목, 3:objectCount(돌 추가일때만))
+    # endingRuleOption([objectNum, pivotCnt] or [direction, count])
+    # objectNum:제거확인object, pivotCnt:기준개수(이하), direction:actionRule과 동일, count:정렬개수
+    # me, you, draw, pass
+    def checkEndingRule(self, data):
         pass
-
-
-    # 다음 착수 가능 확인(placementRuleNum==1), 오브젝트 제거(endingRuleNum==1), 오목 규칙(endingRuleNum==2), 돌 개수(endingRuleNum==3)
-    # 오브젝트 제거(endingRuleOption==제거 오프젝트 번호(int)), 오목 규칙(endingRuleOption==[direction, 개수](list))
-    # 4방(direction==1), 8방(direction==2)
