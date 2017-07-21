@@ -2,7 +2,7 @@
 """
     codeMarble_Core.execution
     ~~~~~~~~~~~~~~~~~~~~~~~~~
-    로그인 확인 데코레이터와 로그인 처리 모듈.
+    manage runing external program.
     :copyright: (c) 2017 by codeMarble
 """
 

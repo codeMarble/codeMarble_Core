@@ -2,7 +2,7 @@
 """
     codeMarble_Core.endingRule
     ~~~~~~~~~~~~~~~~~~~~~~~~~
-    로그인 확인 데코레이터와 로그인 처리 모듈.
+    check and manage ending & winning rule.
     :copyright: (c) 2017 by codeMarble
 """
 
