@@ -28,7 +28,6 @@ class GameData(object):
         self.endingRuleOption = endingRuleOption
         self.userObjectCount = userObjectCount
 
-
         self.gameBoard = gameBoard
         self.dataBoard = dataBoard
 
