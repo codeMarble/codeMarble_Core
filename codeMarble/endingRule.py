@@ -46,43 +46,36 @@ class EndingRule(object):
         # [direction, count]
         gomokuDirection, gomokuCount = data.endingRuleOption
 
-        def checkPlusLine():
-            lines = [[data.gameBoard[i + k][j] for k in range(gomokuCount)] for j in range(len(data.gameBoard)) for i in
-                     range(len(data.gameBoard) - gomokuCount + 1)]
-            for line in lines:
-                if len(set(line)) is 1:
-                    return line[0]
-            lines = [[data.gameBoard[i][j + k] for k in range(gomokuCount)] for j in range(len(data.gameBoard) - gomokuCount + 1) for i in
-                     range(len(data.gameBoard))]
-            for line in lines:
-                if len(set(line)) is 1:
-                    return line[0]
+        pi, pj = data.pos
 
+        if gomokuDirection is 1:
+            directions = [[-1, 0], [1, 0], [0, 1], [0, -1]]
+        elif gomokuDirection is 2:
+            directions = [[-1, 1], [1, 1], [-1, 1], [-1, -1]]
+        elif gomokuDirection is 3:
+            directions = [[-1, 0], [1, 0], [0, 1], [0, -1], [-1, 1], [1, 1], [-1, 1], [-1, -1]]
+        else:
+            # return ErrorCode.valueError(gomokuDirection)
             return False
 
-        def checkCrossLine():
-            lines = [[data.gameBoard[i + k][j + k] for k in range(gomokuCount)] for j in range(len(data.gameBoard) - gomokuCount + 1) for i in
-                     range(len(data.gameBoard) - gomokuCount + 1)]
-            for line in lines:
-                if len(set(line)) is 1:
-                    return line[0]
-            lines = [[data.gameBoard[i + k][j - k] for k in range(gomokuCount)] for j in range(len(data.gameBoard) - gomokuCount + 1) for i in
-                     range(len(data.gameBoard))]
-            for line in lines:
-                if len(set(line)) is 1:
-                    return line[0]
+        # me, you, draw, pass
+        for direction in directions:
+            di, dj = direction
+            try:
+                for k in range(gomokuCount):
+                    if data.gameBoard[pi][pj] != data.gameBoard[pi + di * k][pj + dj * k]:
+                        break
+                # return who is winner
+                else:
+                    return "me" if data.gameBoard[pi][pj] > 0 else "you"
+            # out of range
+            except Exception as e:
+                continue
 
-            return False
-
-        def checkAllLine():
-            return checkPlusLine() or checkCrossLine()
-
-        result = {1: checkPlusLine, 2: checkCrossLine, 3: checkAllLine}
-        try:
-            return result[gomokuDirection]()
-        except KeyError as e:
-            # return ErrorCode.valueError()
-            pass
+        if self.checkCountObject(data) == "draw":
+            return "draw"
+        else:
+            return "pass"
 
     def checkCountObject(self, data):
         from collections import Counter
