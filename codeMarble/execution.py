@@ -7,15 +7,14 @@
 """
 
 import os
-import resource
 import ptrace
-
-LIMITE_TIME = 500
+import resource
+from errorCode import *
 
 
 class Execution(object):
-    def __init__(self):
-        pass
+    def __init__(self, limitTime=1000):
+        self.limitTime = limitTime
 
 
     def executeProgram(self, command):
@@ -31,15 +30,19 @@ class Execution(object):
             result, time = self.__traceProgram(pid)
 
             # if success, check running time
-            if time > LIMITE_TIME:
-                return 'time out\n', time, False
+            if time > self.limitTime:
+                return TIME_OVER, time, False
 
             elif result is True:
-                # get user program's next place position
-                with open(str(parentPid) + '.txt') as fp:
-                    pos = fp.readline()
+                try:
+                    # get user program's next place position
+                    with open(str(parentPid) + '.txt') as fp:
+                        pos = fp.readline()
 
-                return pos, time, True  # return next place position, running tiem, result
+                    return pos, time, True  # return next place position, running tiem, result
+
+                except Execution as e:
+                    return SERVER_ERROR, time, False
 
             # fail
             else:
@@ -55,12 +58,13 @@ class Execution(object):
 
         # cpu using time limit
         soft, hard = resource.getrlimit(resource.RLIMIT_CPU)
-        resource.setrlimit(resource.RLIMIT_CPU, (1, hard))
+        resource.setrlimit(resource.RLIMIT_CPU, ((self.limitTime/1000)+1, hard))
 
         ptrace.traceme()
 
         # program run
         os.execv(command[0], tuple(command[1:]))
+
 
     def __traceProgram(self, pid):
         while True:
@@ -77,7 +81,7 @@ class Execution(object):
                 except Exception as e:
                     pass
 
-                return 'runtime error\n', res[0]
+                return RUNTIME_ERROR, res[0]
 
             else:
                 ptrace.syscall(pid, 0)

@@ -7,9 +7,9 @@
 """
 
 import os
+import sys
 import time
 import random
-from execution import Execution
 
 
 class UserProgram(object):
@@ -28,7 +28,6 @@ class UserProgram(object):
                             'python3': ['/usr/bin/python3', '/usr/bin/python3', './'+self.executionName, '<']}
 
         # make execution object
-        self.execution = Execution()
 
     def compile(self):
         # python is not compiled
@@ -41,9 +40,9 @@ class UserProgram(object):
             self.compileMessage[self.language].append(self.executionName)
 
             # compile with execution object & return result
-            return self.execution.executeProgram(self.compileMessage[self.language])
+            return self.compileMessage[self.language]
 
 
     def play(self):
          # run program with execution object & return result
-        return self.execution.executeProgram(self.playMessage[self.language])
+        return self.playMessage[self.language]

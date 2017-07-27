@@ -8,6 +8,13 @@
 
 import os
 
+MISS_POSITION = 'miss position'
+OUT_OF_RANGE = 'out of range'
+TIME_OVER = 'time over'
+OUTPUT_ERROR = 'output error'
+RUNTIME_ERROR = 'runtime error'
+TYPE_ERROR = 'not correct type'
+SERVER_ERROR = 'server error'
 
 class ErrorCode(object):
     def __init__(self):

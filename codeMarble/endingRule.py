@@ -14,7 +14,7 @@ error = ErrorCode()
 
 class EndingRule(object):
     def __init__(self):
-        pass
+        self.result = {'pass': 0, 'me': 1, 'you': 2, 'draw': 3}
 
     # endingRuleNum(1:checkRemove, 2:오목, 3:objectCount(돌 추가일때만))
     # endingRuleOption([objectNum, pivotCnt] or [direction, count])
@@ -67,7 +67,7 @@ class EndingRule(object):
                         break
                 # return who is winner
                 else:
-                    return "me" if data.gameBoard[pi][pj] > 0 else "you"
+                    return self.result['me'] if data.gameBoard[pi][pj] > 0 else self.result['you']
             # out of range
             except Exception as e:
                 continue
