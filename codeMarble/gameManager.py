@@ -10,18 +10,18 @@ import os
 import sys
 from copy import deepcopy
 
-from execution import Execution
+from errorCode import *
 from gameData import GameData
+from execution import Execution
 from userProgram import UserProgram
 from scriptTemplate import UserRule
-from errorCode import *
 
 
 class GameManager(object):
-    def __init__(self, challenger, champion, placementRuleNum, placementRuleOption, isAllyExistNum, allyExistOption,
-                 isEnemyExistNum, enemyExistOption, isExtraExistNum, extraExistOption, actionRuleNum, actionRuleOption1,
-                 actionRuleOption2, endingRuleNum, endingRuleOption, limitTime, gameBoard, dataBoard, scriptPath=None,
-                 problemIndex='scriptTemplate'):
+    def __init__(self, challenger, champion, placementRuleNum, placementRuleOption1, placementRuleOption2, isAllyExistNum,
+                 allyExistOption, isEnemyExistNum, enemyExistOption, isExtraExistNum, extraExistOption, actionRuleNum,
+                 actionRuleOption1, actionRuleOption2, endingRuleNum, endingRuleOption, limitTime, gameBoard, dataBoard,
+                 scriptPath=None, problemIndex='scriptTemplate'):
         if type(challenger) is not UserProgram and type(champion) is not UserProgram:
             raise TypeError
 
@@ -33,8 +33,8 @@ class GameManager(object):
         self.challenger = challenger
         self.champion = champion
 
-        self.data = GameData(placementRuleNum, placementRuleOption, isAllyExistNum, allyExistOption, isEnemyExistNum,
-                             enemyExistOption, isExtraExistNum, extraExistOption, actionRuleNum, actionRuleOption1,
+        self.data = GameData(placementRuleNum, placementRuleOption1, placementRuleOption2, isAllyExistNum, allyExistOption,
+                             isEnemyExistNum, enemyExistOption, isExtraExistNum, extraExistOption, actionRuleNum, actionRuleOption1,
                              actionRuleOption2, endingRuleNum, endingRuleOption, gameBoard, dataBoard)
 
         self.limitTime = limitTime
@@ -95,6 +95,7 @@ class GameManager(object):
                 return 'lose' if flag else 'win'
 
             # change boarad setting (champ <-> challenger)
+            self.data.resetData()
             self.changePlayerNBoard(flag, result)
             flag = (not flag)
 
@@ -131,3 +132,30 @@ class GameManager(object):
     def compileUserCode(self):
         self.execution.executeProgram(self.challenger.compile())
         self.execution.executeProgram(self.champion.compile())
+
+
+
+if __name__ == '__main__':
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

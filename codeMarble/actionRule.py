@@ -7,9 +7,9 @@
 """
 
 import os
-from errorCode import ErrorCode
+import sys
 
-error = ErrorCode()
+from errorCode import *
 
 
 class ActionRule(object):
@@ -20,9 +20,6 @@ class ActionRule(object):
     # actionRuleOption2(0:othello, n:size)
     def checkActionRule(self, data):
         try:
-            if type(data.actionRuleNum) is not int:
-                return error.serverError('type not matched.')
-
             if data.actionRuleNum is 1:
                 return self.removeObject(data)
 
@@ -30,38 +27,34 @@ class ActionRule(object):
                 return self.changeObject(data)
 
             else:
-                return error.serverError('unknown actionRuleNum : {}'.format(data.actionRuleNum))
+                return GAME_ERROR
 
         except Exception as e:
-            return error.serverError()
+            return SERVER_ERROR
 
     # actionRuleOption1(0:script, 1:＋dir, 2:×dir, 3:8dir, 4:go)
     # actionRuleOption2(0:othello, n:size)
     # actionRuleOption1, actionRuleOption2, gameBoard, dataBoard, pos
     def removeObject(self, data):
         try:
-            if type(data.actionRuleOption1) != int or type(data.actionRuleOption2) != int or type(data.pos[0]) != int or type(data.pos[1]) != int:
-                return error.serverError('type not matched.')
-
-            elif len(data.gameBoard) != len(data.gameBoard[0]):
-                return error.serverError('gameboard size not matched. [row : {}, col : {}]'.format(len(data.gameBoard), len(data.gameBoard[0])))
-
             if data.actionRuleOption2 > len(data.gameBoard):
-                return error.serverError('The size you want to erase is larger than the size of the board. [erase size : {}, board size : {}]'.format(data.actionRuleOption2, len(data.gameBoard)))
-
+                return GAME_ERROR
 
             if 1 <= data.actionRuleOption1 <= 3: # remove size or othello
                 if data.actionRuleOption2 == 0: # othello
                     return self.actionObjectByOthello(data.gameBoard, data.pos, 0)
+
                 else: # size
                     return self.actionObjectBySize(data.gameBoard, data.pos, data.actionRuleOption2, 0)
+
             elif data.actionRuleOption1 == 4:  # remove go rule
                 return self.actionObjectByGo(data.gameBoard, data.pos, 0)
+
             else:
-                return error.serverError('unknown actionRuleOption1 : {}'.format(data.actionRuleOption1))
+                return SERVER_ERROR
 
         except Exception as e:
-            return error.serverError()
+            return SERVER_ERROR
 
     def actionObjectByGo(self, board, pos, value):
         pi, pj = pos
@@ -126,42 +119,30 @@ class ActionRule(object):
             dirs = [[-1, 0], [1, 0], [0, 1], [0, -1]]
 
         else:
-            return error.serverError('unknown actionRuleOption1 : {}'.format(actionRuleOption1))
+            return GAME_ERROR
 
         return dirs
 
     # actionRuleNum, actionRuleOption1, actionRuleOption2, gameBoard, dataBoard, pos
     def changeObject(self, data):
         try:
-            if type(data.actionRuleOption1) != int or type(data.actionRuleOption2) != int or type(
-                    data.pos[0]) != int or type(data.pos[1]) != int:
-                return error.serverError('type not matched.')
-
-            elif len(data.gameBoard) != len(data.gameBoard[0]):
-                return error.serverError('gameboard size not matched. [row : {}, col : {}]'.format(len(data.gameBoard),
-                                                                                                   len(data.gameBoard[0])))
-
             if data.actionRuleOption2 > len(data.gameBoard):
-                return error.serverError(
-                    'The size you want to erase is larger than the size of the board. [erase size : {}, board size : {}]'.format(
-                        data.actionRuleOption2, len(data.gameBoard)))
+                return GAME_ERROR
 
             if 1 <= data.actionRuleOption1 <= 3:  # remove size or othello
                 if data.actionRuleOption2 == 0:  # othello
                     return self.actionObjectByOthello(data.gameBoard, data.pos, data.gameBoard[data.pos[0]][data.pos[1]])
                 else:  # size
                     return self.actionObjectBySize(data.gameBoard, data.pos, data.actionRuleOption2, data.gameBoard[data.pos[0]][data.pos[1]])
+
             elif data.actionRuleOption1 == 4:  # remove go rule
                 return self.actionObjectByGo(data.gameBoard, data.pos, data.gameBoard[data.pos[0]][data.pos[1]])
+
             else:
-                return error.serverError('unknown actionRuleOption1 : {}'.format(data.actionRuleOption1))
+                return SERVER_ERROR
 
         except Exception as e:
-            return error.serverError()
-
-    def actionObjectByScript(self, data):
-
-        pass
+            return SERVER_ERROR
 
     class GoRule:
         def checkBoard(self, board, pos):

@@ -7,25 +7,20 @@
 """
 
 import os
-from errorCode import ErrorCode
+import sys
 
-error = ErrorCode()
+from errorCode import *
 
 
 class EndingRule(object):
     def __init__(self):
         self.result = {'pass': 0, 'me': 1, 'you': 2, 'draw': 3}
 
-    # endingRuleNum(1:checkRemove, 2:오목, 3:objectCount(돌 추가일때만))
+    # endingRuleNum(1:checkRemove, 2:gomoku, 3:objectCount(돌 추가일때만))
     # endingRuleOption([objectNum, pivotCnt] or [direction, count])
-    # objectNum:제거확인object, pivotCnt:기준개수(이하), direction:actionRule과 동일, count:정렬개수
+    # objectNum:제거확인object, pivotCnt:pivotCount(<=), direction:actionRule과 동일, count:정렬개수
     # me, you, draw, pass
     def checkEndingRule(self, data):
-        # type check if statement
-        # result, (pred, real) = data.isValidTypeData():
-        # if not result:
-        #     return ErrorCode.typeError(pred, real)
-
         if data.endingRuleNumber is 1:
             return self.checkRemoveObject(data)
         elif data.endingRuleNumber is 2:
@@ -33,8 +28,7 @@ class EndingRule(object):
         elif data.endingRuleNumber is 3:
             return self.checkCountObject(data)
         else:
-            # return ErrorCode.valueError(data.endingRuleNumber)
-            pass
+            return GAME_ERROR
 
     def checkRemoveObject(self, data):
         pivotObject, pivotCnt = data.endingRuleOption
@@ -53,10 +47,9 @@ class EndingRule(object):
         elif gomokuDirection is 2:
             directions = [[-1, 1], [1, 1], [-1, 1], [-1, -1]]
         elif gomokuDirection is 3:
-            directions = [[-1, 0], [1, 0], [0, 1], [0, -1], [-1, 1], [1, 1], [-1, 1], [-1, -1]]
+            directions = [[-1, 0], [1, 0], [0, 1], [0, -1], [-1, 1], [1, 1], [1, -1], [-1, -1]]
         else:
-            # return ErrorCode.valueError(gomokuDirection)
-            return False
+            return GAME_ERROR
 
         # me, you, draw, pass
         for direction in directions:
@@ -72,23 +65,23 @@ class EndingRule(object):
             except Exception as e:
                 continue
 
-        if self.checkCountObject(data) == "draw":
-            return "draw"
+        if self.checkCountObject(data) == self.result['draw']:
+            return self.result['draw']
         else:
-            return "pass"
+            return self.result['pass']
 
     def checkCountObject(self, data):
         from collections import Counter
         objectCounter = Counter([object for gameBoardRow in data.gameBoard for object in gameBoardRow])
 
         if objectCounter[0] != 0:
-            return "pass"
+            return self.result['pass']
 
         object1, object2 = objectCounter.most_common(2)
 
         if object1[1] < object2[1]:
-            return "me"
+            return self.result['me']
         elif object1[1] > object2[1]:
-            return "you"
+            return self.result['you']
         else:
-            return "draw"
+            return self.result['draw']
