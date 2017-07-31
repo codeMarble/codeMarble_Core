@@ -10,18 +10,14 @@ import os
 import sys
 
 class GameData(object):
-    def __init__(self, userObjectCount, placementRuleNum, placementRuleOption1, placementRuleOption2, isAllyExistNum,
-                 allyExistOption, isEnemyExistNum, enemyExistOption, isExtraExistNum, extraExistOption, actionRuleNum,
-                 actionRuleOption1, actionRuleOption2, endingRuleNum, endingRuleOption, gameBoard, dataBoard):
+    def __init__(self, userObjectCount, placementRuleNum, placementRuleOption1, placementRuleOption2, existRuleNum,
+                 existRuleOption, actionRuleNum, actionRuleOption1, actionRuleOption2, endingRuleNum, endingRuleOption,
+                 gameBoard, dataBoard):
         self.placementRuleNum = placementRuleNum    # int
         self.placementRuleOption1 = placementRuleOption1    # int
         self.placementRuleOption2 = placementRuleOption2    # [[n1, n2],..]
-        self.isAllyExistNum = isAllyExistNum    # int
-        self.allyExistOption = allyExistOption    # int
-        self.isEnemyExistNum = isEnemyExistNum    # int
-        self.enemyExistOption = enemyExistOption    # int
-        self.isExtraExistNum = isExtraExistNum    # int
-        self.extraExistOption = extraExistOption    # int
+        self.existRuleNum = existRuleNum    # [n1,n2,n3], n=1or2
+        self.existRuleOption = existRuleOption    # [n1,n2,n3], 1<=n<=3
         self.actionRuleNum = actionRuleNum    # int
         self.actionRuleOption1 = actionRuleOption1    # int
         self.actionRuleOption2 = actionRuleOption2    # int
