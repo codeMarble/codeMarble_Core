@@ -18,7 +18,7 @@ class PlacementRule(object):
 
 
     # placementRuleNum(1:add, 2:move), placementRuleOption1(1or2), placementRuleOption2([[n1, n2],...] or none: move option)
-    # isAllyExistNum, isEnemyExistNum, isExtraExistNum(1:don't placement, 2:remove), existOption(1or2or3:remove option)
+    # existRuleNum([ally, enemy, extra], 1or2), existRuleOption([ally, enemy, extra], 1or2or3)
     # userObjectCount(n)
     def checkPlacementRule(self, data):
         try:
@@ -125,11 +125,11 @@ class PlacementRule(object):
 
 
     def applyAllyExistRule(self, data):
-        if data.isAllyExist is 1:
+        if data.existRuleNum[0] is 1:
             return MISS_POSITION + '(%d,%d)'%(data.pos[0], data.pos[1])
 
-        elif data.isAllyExist is 2:
-            if data.allyExistOption is 1:
+        elif data.existRuleNum[0] is 2:
+            if data.existRuleOption[0] is 1:
                 data.gameBoard[data.pos[0]][data.pos[1]] = data.objectNum
 
             else:
@@ -142,14 +142,14 @@ class PlacementRule(object):
 
 
     def applyEnemyExistRule(self, data):
-        if data.isEnemyExist is 1:
+        if data.existRuleNum[1] is 1:
             return MISS_POSITION + '(%d,%d)'%(data.pos[0], data.pos[1])
 
-        elif data.isEnemyExist is 2: #remove
-            if data.enemyExistOption is 1:  # delete enemy and not move object
+        elif data.existRuleNum[1] is 2: #remove
+            if data.existRuleOption[1] is 1:  # delete enemy and not move object
                 data.gameBoard[data.pos[0]][data.pos[1]] = 0
 
-            elif data.enemyExistOption is 2:   # delete enemy and move object
+            elif data.existRuleOption[1] is 2:   # delete enemy and move object
                 data.gameBoard[data.pos[0]][data.pos[1]] = data.objectNum
                 data.gameBoard[data.pastPos[0]][data.pastPos[1]] = 0
 
@@ -163,14 +163,14 @@ class PlacementRule(object):
 
 
     def applyExtraExistRule(self, data):
-        if data.isExtraExist is 1:
+        if data.existRuleNum[2] is 1:
             return MISS_POSITION + '(%d,%d)'%(data.pos[0], data.pos[1])
 
-        elif data.isEnemyExist is 2:  # remove
-            if data.enemyExistOption is 1:  # delete enemy and not move object
+        elif data.existRuleNum[2] is 2:  # remove
+            if data.existRuleOption[2] is 1:  # delete enemy and not move object
                 data.gameBoard[data.pos[0]][data.pos[1]] = 0
 
-            elif data.enemyExistOption is 2:  # delete enemy and move object
+            elif data.existRuleOption[2] is 2:  # delete enemy and move object
                 data.gameBoard[data.pos[0]][data.pos[1]] = data.objectNum
                 data.gameBoard[data.pastPos[0]][data.pastPos[1]] = 0
 

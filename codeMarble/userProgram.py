@@ -15,10 +15,9 @@ import random
 class UserProgram(object):
     def __init__(self, language, fileName, path):
         # parameter setting
-        self.filePath = path
+        self.filePath = os.path.join(path, fileName)
         self.language = language
-        self.fileName = fileName
-        self.executionName = "%s_%s" %(str(random.randint(1, 100)) + str(time.time())[0:3])
+        self.executionName = "%s_%s" %(str(random.randint(1, 100)) + str(time.time())[2:5])
 
         self.compileMessage = {'c': ['/usr/bin/gcc', '/usr/bin/gcc', '-o'],
                                'c++': ['/usr/bin/g++', '/usr/bin/g++', '-std=c++11', '-o']}
@@ -36,7 +35,7 @@ class UserProgram(object):
 
         else:
             # compile parameter setting
-            self.compileMessage[self.language].append(self.fileName)
+            self.compileMessage[self.language].append(self.filePath)
             self.compileMessage[self.language].append(self.executionName)
 
             # compile with execution object & return result
