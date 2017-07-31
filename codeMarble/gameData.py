@@ -33,6 +33,8 @@ class GameData(object):
         self.pos = None    # None
         self.postPos = None    # None
 
+        self.checkDataType()
+
 
     def resetData(self):
         self.message = None
@@ -42,11 +44,10 @@ class GameData(object):
 
 
     def checkDataType(self):
-        intList = [self.placementRuleNum, self.placementRuleOption1, self.isAllyExistNum, self.allyExistOption,
-                        self.isEnemyExistNum, self.enemyExistOption, self.actionRuleNum, self.actionRuleOption1,
-                        self.actionRuleOption2, self.endingRuleNum, self.userObjectCount]
+        intList = [self.placementRuleNum, self.placementRuleOption1,self.actionRuleNum, self.actionRuleOption1,
+                   self.actionRuleOption2, self.endingRuleNum, self.userObjectCount]
 
-        lst2dList = [self.placementRuleOption2, self.endingRuleOption]
+        lst2dList = [self.existRuleNum, self.existRuleOption, self.placementRuleOption2, self.endingRuleOption]
         squareList = [self.gameBoard, self.dataBoard]
 
         if not all(type(var) is int for var in intList) or \
