@@ -46,11 +46,15 @@ class GameData(object):
     def checkDataType(self):
         intList = [self.placementRuleNum, self.placementRuleOption1,self.actionRuleNum, self.actionRuleOption1,
                    self.actionRuleOption2, self.endingRuleNum, self.userObjectCount]
+        noneList = [self.message, self.objectNum, self.pos, self.postPos]
 
-        lst2dList = [self.existRuleNum, self.existRuleOption, self.placementRuleOption2, self.endingRuleOption]
+        lst1dList = [self.existRuleNum, self.existRuleOption, self.endingRuleOption]
+        lst2dList = [self.placementRuleOption2]
         squareList = [self.gameBoard, self.dataBoard]
 
         if not all(type(var) is int for var in intList) or \
+                not all(var is None for var in noneList) or \
+                not all(type(var) is list for var in lst1dList) or \
                 not all(type(var) is list and var and type(var[0]) is list for var in lst2dList) or \
                 not all(type(var) is list and var and type(var[0]) is list and len(var) == len(var[0]) for var in squareList):
             return False
