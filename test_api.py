@@ -4,6 +4,7 @@ import pytest
 from codeMarble import gameData
 from codeMarble import placementRule
 
+
 initBoard = [[0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,1,-1,0,0,0],
              [0,0,0,-1,1,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0]]
 
