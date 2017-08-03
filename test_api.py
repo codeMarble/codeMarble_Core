@@ -28,7 +28,7 @@ def test_PlacementRule():
     data.message, data.userObjectCount, data.placementRuleNum = '2 4', 1, 1
     data.placementRuleOption1, data.placementRuleOption2 = 1, None
 
-    assert True == testObject.applyPlacementRule(data) and data.pos == [2, 4] and \
+    assert True is testObject.applyPlacementRule(data) and data.pos == [2, 4] and \
            data.gameBoard == [[0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,1,0,0,0], [0,0,0,1,-1,0,0,0], [0,0,0,-1,1,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0]]
 
 
