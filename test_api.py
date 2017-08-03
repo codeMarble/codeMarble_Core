@@ -8,6 +8,9 @@ from codeMarble import placementRule
 initBoard = [[0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,1,-1,0,0,0],
              [0,0,0,-1,1,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0]]
 
+data = gameData.GameData(1, 1, 1, [[1,1],[2,1]], [1, 1, 1, 1], [1, 1, 1, 1], 1, 1, 1, 2, [1, 4],
+                             copy.deepcopy(initBoard), copy.deepcopy(initBoard))
+
 # placementRuleNum(1:add, 2:move), placementRuleOption1(1or2or3), placementRuleOption2([[n1, n2],...] or none: move option)
 # existRuleNum([ally, enemy, extra], 1or2), existRuleOption([ally, enemy, extra], 1or2or3)
 # userObjectCount(n)
@@ -18,7 +21,7 @@ initBoard = [[0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0], [0,0,0,1,-
 # objectNum:check del object, pivotCnt:pivotCount(<=), direction:==actionRule, count:count
 # 1(me), 2(you), 3(draw), 0(pass)
 
-def checkPlacementRule(data):
+def test_PlacementRule(data):
     testObject = placementRule.PlacementRule()
     outputMessage = ['2 4', '1 2 4', '3 3 > 2 4']
 
@@ -30,21 +33,14 @@ def checkPlacementRule(data):
 
 
 
-def checkActionRule(data):
+def test_ActionRule(data):
     pass
 
 
-def checkEndingRule(data):
+def test_EndingRule(data):
     pass
 
 
-if __name__ == '__main__':
-    data = gameData.GameData(1, 1, 1, [[1,1],[2,1]], [1, 1, 1, 1], [1, 1, 1, 1], 1, 1, 1, 2, [1, 4],
-                             copy.deepcopy(initBoard), copy.deepcopy(initBoard))
-
-    checkPlacementRule(data)
-    checkActionRule(data)
-    checkEndingRule(data)
 
 #userObjectCount, placementRuleNum, placementRuleOption1, placementRuleOption2, existRuleNum,
 #existRuleOption, actionRuleNum, actionRuleOption1, actionRuleOption2, endingRuleNum, endingRuleOption,
