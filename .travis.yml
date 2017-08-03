@@ -5,14 +5,14 @@ python:
 install:
   - pip install pytest
   - pip install pytest-cov==2.4.0
-#  - pip install coveralls==1.1
+  - pip install coveralls==1.1
   - pip install ptrace resource tox tox-travis
 
 script:
   - py.test --cov codeMarble test_api.py
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - coveralls
 
 notifications:
   email:
