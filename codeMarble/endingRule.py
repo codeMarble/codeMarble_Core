@@ -8,6 +8,8 @@
 
 import os
 import sys
+import itertools
+from collections import Counter
 
 from errorCode import *
 
@@ -19,7 +21,7 @@ class EndingRule(object):
     # endingRuleNum(1:checkRemove, 2:gomoku, 3:objectCount(돌 추가일때만))
     # endingRuleOption([objectNum, pivotCnt] or [direction, count])
     # objectNum:제거확인object, pivotCnt:pivotCount(<=), direction:actionRule과 동일, count:정렬개수
-    # me, you, draw, pass
+    # 1(me), 2(you), 3(draw), 0(pass)
     def checkEndingRule(self, data):
         if data.endingRuleNumber is 1:
             return self.checkRemoveObject(data)
@@ -71,8 +73,7 @@ class EndingRule(object):
             return self.result['pass']
 
     def checkCountObject(self, data):
-        from collections import Counter
-        objectCounter = Counter([object for gameBoardRow in data.gameBoard for object in gameBoardRow])
+        objectCounter = Counter(list(itertools.chain.from_iterable(data.gameBoard)))
 
         if objectCounter[0] != 0:
             return self.result['pass']

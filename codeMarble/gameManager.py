@@ -26,7 +26,7 @@ class GameManager(object):
 
         if scriptPath:
             sys.path.insert(0, scriptPath)
-        exec 'from %s import UserRule' % (problemIndex)
+        exec 'from {0} import UserRule'.format(problemIndex)
 
         # parameter setting
         self.challenger = challenger
@@ -82,10 +82,10 @@ class GameManager(object):
                             else:
                                 return 'draw'
 
-                if result == 'server error':
-                    return SERVER_ERROR
+                if result == SERVER_ERROR or result == GAME_ERROR:
+                    return result
 
-                else:
+                elif type(result) is str:
                     userList[flag][1] += 1
                     self.data.gameBoard = deepcopy(originalGameBoard)
                     self.data.dataBoard = deepcopy(originalDataBoard)
@@ -133,9 +133,38 @@ class GameManager(object):
         self.execution.executeProgram(self.champion.compile())
 
 
-
 if __name__ == '__main__':
-    pass
+    import json
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--path', type=str, default=os.getcwd(), help='input file(code&rule) directory')
+    parser.add_argument('--script', type=str, default='scriptTemplate', help='input script file name')
+    parser.add_argument('--rule', type=str, default='rule', help='input rule file name')
+    parser.add_argument('--player1', type=str, default='p1', help='input champion code file name')
+    parser.add_argument('--player2', type=str, default='p2', help='input challenger code file name')
+
+    parsed, unparsed = parser.parse_known_args()
+
+    if len(unparsed) > 0:
+        print("check your argument. if you want help, use 'codemarble --help'.")
+
+    fileInDir = os.listdir(parsed.path)
+    fileName = [parsed.script, parsed.rule, parsed.player1, parsed.player2]
+
+    for i in fileInDir:
+        for k in fileName:
+            if k in i:
+                break
+    else:
+        print('you inputted wrong data.')
+        os.exit(0)
+
+    with open(os.path.join(parsed.path, parsed.script+'.grd')) as fp:
+        ruleData = fp.read()
+
+    ruleData = json.load(ruleData)
+
 
 
 
