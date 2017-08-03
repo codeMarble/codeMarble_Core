@@ -21,7 +21,7 @@ data = gameData.GameData(1, 1, 1, [[1,1],[2,1]], [1, 1, 1, 1], [1, 1, 1, 1], 1, 
 # objectNum:check del object, pivotCnt:pivotCount(<=), direction:==actionRule, count:count
 # 1(me), 2(you), 3(draw), 0(pass)
 
-def test_PlacementRule(data):
+def test_PlacementRule():
     testObject = placementRule.PlacementRule()
     outputMessage = ['2 4', '1 2 4', '3 3 > 2 4']
 
@@ -33,11 +33,11 @@ def test_PlacementRule(data):
 
 
 
-def test_ActionRule(data):
+def test_ActionRule():
     pass
 
 
-def test_EndingRule(data):
+def test_EndingRule():
     pass
 
 
