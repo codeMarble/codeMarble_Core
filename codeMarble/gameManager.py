@@ -18,9 +18,9 @@ from scriptTemplate import UserRule
 
 
 class GameManager(object):
-    def __init__(self, challenger, champion, placementRuleNum, placementRuleOption1, placementRuleOption2, existRuleNum,
-                 existRuleOption, actionRuleNum, actionRuleOption1, actionRuleOption2, endingRuleNum, endingRuleOption,
-                 limitTime, gameBoard, dataBoard, scriptPath=None, problemIndex='scriptTemplate'):
+    def __init__(self, challenger, champion, placementRuleNum, placementRuleOption, existRuleNum, existRuleOption,
+                 actionRuleNum, actionRuleOption1, actionRuleOption2, endingRuleNum, endingRuleOption, limitTime,
+                 gameBoard, dataBoard, scriptPath=None, problemIndex='scriptTemplate'):
         if type(challenger) is not UserProgram and type(champion) is not UserProgram:
             raise TypeError
 
@@ -32,9 +32,8 @@ class GameManager(object):
         self.challenger = challenger
         self.champion = champion
 
-        self.data = GameData(placementRuleNum, placementRuleOption1, placementRuleOption2, existRuleNum, existRuleOption,
-                             actionRuleNum, actionRuleOption1, actionRuleOption2, endingRuleNum, endingRuleOption,
-                             gameBoard, dataBoard)
+        self.data = GameData(placementRuleNum, placementRuleOption, existRuleNum, existRuleOption, actionRuleNum,
+                             actionRuleOption1, actionRuleOption2, endingRuleNum, endingRuleOption, gameBoard, dataBoard)
 
         self.limitTime = limitTime
 

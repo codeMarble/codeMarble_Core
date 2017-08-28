@@ -10,12 +10,11 @@ import os
 import sys
 
 class GameData(object):
-    def __init__(self, userObjectCount, placementRuleNum, placementRuleOption1, placementRuleOption2, existRuleNum,
+    def __init__(self, userObjectCount, placementRuleNum, placementRuleOption, existRuleNum,
                  existRuleOption, actionRuleNum, actionRuleOption1, actionRuleOption2, endingRuleNum, endingRuleOption,
                  gameBoard, dataBoard):
         self.placementRuleNum = placementRuleNum    # int
-        self.placementRuleOption1 = placementRuleOption1    # int
-        self.placementRuleOption2 = placementRuleOption2    # [[n1, n2],..]
+        self.placementRuleOption = placementRuleOption    # [] or [[n1,n2],...]
         self.existRuleNum = existRuleNum    # [n1,n2,n3], n=1or2
         self.existRuleOption = existRuleOption    # [n1,n2,n3], 1<=n<=3
         self.actionRuleNum = actionRuleNum    # int
