@@ -26,13 +26,13 @@ class PlacementRule(object):
             destinationState = data.gameBoard[data.pos[0]][data.pos[1]]
 
             if abs(destinationState) > 3:
-                self.applyExtraExistRule(data)
+                interResult = self.applyExtraExistRule(data)
 
             elif destinationState > 0:
-                self.applyAllyExistRule(data)
+                interResult = self.applyAllyExistRule(data)
 
             else:
-                self.applyEnemyExistRule(data)
+                interResult = self.applyEnemyExistRule(data)
 
             return interResult
 
@@ -60,8 +60,10 @@ class PlacementRule(object):
             direct2 = [[1, 1], [-1, 1], [-1, -1], [1, -1]]
 
 
+            if data.placementRuleOption[data.objectNum - 1] is 0:
+                return True
 
-            if data.placementRuleOption1 < 3:
+            elif data.placementRuleOption[data.objectNum - 1] < 3:
                 direct = direct1 if data.placementRuleOption is 1 else direct2
 
             else:
@@ -69,6 +71,7 @@ class PlacementRule(object):
 
             for dRow, dCol in direct:  # check option for adding rule.
                 tr, tc = row + dRow, col + dCol
+
                 if (tr < matrixSize and tr >= 0) and (tc < matrixSize and tc >= 0):
                     if data.gameBoard[tr][tc] > 0 and data.gameBoard[tr][tc] < 4:  # if it fits option rule, break for statement
                         break
@@ -94,24 +97,27 @@ class PlacementRule(object):
                 return MISS_POSITION + '(%d,%d)'%(row, col)
 
             # check the rule to move object
-            if data.placementRuleOption1 < 3:    # check move size each object's direction
-                if data.placementRuleOption2[data.objectNum - 1][0] is 1:    # ＋ dir
-                    if not self.checkMovingDirction1(data, rowMovingSize, colMovingSize):
-                        return MISS_POSITION + '(%d,%d)'%(row, col)
+            if data.placementRuleOption[data.objectNum - 1][0] is 0:
+                pass
 
-                elif data.placementRuleOption2[data.objectNum - 1][0] is 2:  # × dir
-                    if not self.checkMovingDirction2(data, rowMovingSize, colMovingSize):
-                        return MISS_POSITION + '(%d,%d)'%(row, col)
+            # check move size each object's direction
+            if data.placementRuleOption[data.objectNum - 1][0] is 1:    # ＋ dir
+                if not self.checkMovingDirction1(data, rowMovingSize, colMovingSize):
+                    return MISS_POSITION + '(%d,%d)'%(row, col)
 
-                elif data.placementRuleOption2[data.objectNum - 1][0] is 3:  # 8 dir
-                    if (not self.checkMovingDirction1(data, rowMovingSize, colMovingSize)) or \
-                        (not self.checkMovingDirction2(data, rowMovingSize, colMovingSize)):
-                        return MISS_POSITION + '(%d,%d)'%(row, col)
+            elif data.placementRuleOption[data.objectNum - 1][0] is 2:  # × dir
+                if not self.checkMovingDirction2(data, rowMovingSize, colMovingSize):
+                    return MISS_POSITION + '(%d,%d)'%(row, col)
+
+            elif data.placementRuleOption[data.objectNum - 1][0] is 3:  # 8 dir
+                if (not self.checkMovingDirction1(data, rowMovingSize, colMovingSize)) or \
+                    (not self.checkMovingDirction2(data, rowMovingSize, colMovingSize)):
+                    return MISS_POSITION + '(%d,%d)'%(row, col)
 
                 else:
                     return GAME_ERROR
 
-            else:  # check each object's move path and size
+            elif data.placementRuleOption[data.objectNum - 1][0] is 4:  # check each object's move path and size
                 if rowMovingSize != data.placementRuleOption2[data.objectNum - 1][0] or \
                     colMovingSize != data.placementRuleOption2[data.objectNum - 1][1]:
                     return MISS_POSITION + '(%d,%d)'%(row, col)
@@ -207,38 +213,45 @@ class PlacementRule(object):
             return False
 
 
-    def checkMovingDirction1(self, data, rowMovingSize, colMovingSize):
+    def checkMovingDirction1(self, data, rowMovingSize, colMovingSize): # check direction and size
         totalSize = rowMovingSize + colMovingSize
 
-        if totalSize == rowMovingSize or totalSize == colMovingSize:
-            if data.placementRuleOption1 is 1:
-                if rowMovingSize != data.placementRuleOption2[data.objectNum - 1][1] and \
-                    colMovingSize != data.placementRuleOption2[data.objectNum - 1][1]:
-                        return False
+        if rowMovingSize == colMovingSize and data.placementRuleOption2[data.objectNum - 1][2] == rowMovingSize:
+            if data.placementRuleOption2[data.objectNum - 1][0] is 1:
+                return False
 
-            else:
-                if data.placementRuleOption2[data.objectNum - 1][1]:
-                    posList = zip(range(data.postPos[0]+1, data.pos[0]), [data.postPos[1]]*(totalSize-1)) if totalSize == rowMovingSize \
-                              else zip([data.postPos[0]]*totalSize, range(data.postPos[1]+1, data.pos[1]+1))
+        elif totalSize == rowMovingSize or totalSize == colMovingSize and data.placementRuleOption2[data.objectNum - 1][2] == totalSize:
+            if data.placementRuleOption2[data.objectNum - 1][0] is 2:
+                return False
 
-                    for tRow, tCol in posList:
-                        if -4 < data.gameBoard[tRow][tCol] < 0:
-                            return False
+        else:
+            return False
+
+        if data.placementRuleOption2[data.objectNum - 1][1]:
+            posList = zip(range(data.postPos[0], data.pos[0]), range(data.postPos[1], data.pos[1]))
+
+            for tRow, tCol in posList[1:]:
+                if 0 < abs(data.gameBoard[tRow][tCol]) < 4:
+                    return False
+
         return True
 
 
     def checkMovingDirction2(self, data, rowMovingSize, colMovingSize):
-        if data.placementRuleOption1 is 1:
-            if rowMovingSize != colMovingSize or rowMovingSize != data.placementRuleOption2[data.objectNum - 1][1]:
+        for tRow in range(data.postPos[0], data.pos[0])[1:]:
+            if 0 < abs(data.gameBoard[tRow][data.postPos[1]]) < 4:
                 return False
 
-        else:
-            if data.placementRuleOption2[data.objectNum - 1][1]:
-                for tRow, tCol in zip(range(data.postPos[0], data.pos[0]), range(data.postPos[1], data.pos[1])):
-                    if tRow == data.postPos[0]:
-                        continue
+        for tRow in range(data.postPos[0], data.pos[0])[1:]:
+            if 0 < abs(data.gameBoard[tRow][data.pos[1]]) < 4:
+                return False
 
-                    elif -4 < data.gameBoard[tRow][tCol] < 0:
-                        return False
+        for tCol in range(data.postPos[1], data.pos[1])[1:]:
+            if 0 < abs(data.gameBoard[data.postPos[0]][tCol]) < 4:
+                return False
+
+        for tCol in range(data.postPos[1], data.pos[1])[1:]:
+            if 0 < abs(data.gameBoard[data.pos[0]][tCol]) < 4:
+                return False
 
         return True
