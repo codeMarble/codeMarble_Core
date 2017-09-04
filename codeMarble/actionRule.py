@@ -20,10 +20,10 @@ class ActionRule(object):
     # actionRuleOption2(0:othello, n:size)
     def checkActionRule(self, data):
         try:
-            if data.actionRuleNum is 1:
+            if data.actionRule[0] is 1:
                 return self.removeObject(data)
 
-            elif data.actionRuleNum is 2:
+            elif data.actionRule[0] is 2:
                 return self.changeObject(data)
 
             else:
@@ -37,17 +37,17 @@ class ActionRule(object):
     # actionRuleOption1, actionRuleOption2, gameBoard, dataBoard, pos
     def removeObject(self, data):
         try:
-            if data.actionRuleOption2 > len(data.gameBoard):
+            if data.actionOption > len(data.gameBoard):
                 return GAME_ERROR
 
-            if 1 <= data.actionRuleOption1 <= 3: # remove size or othello
-                if data.actionRuleOption2 == 0: # othello
+            if 1 <= data.actionRule[1] <= 3: # remove size or othello
+                if data.actionOption == 0: # othello
                     return self.actionObjectByOthello(data.gameBoard, data.pos, 0)
 
                 else: # size
-                    return self.actionObjectBySize(data.gameBoard, data.pos, data.actionRuleOption2, 0)
+                    return self.actionObjectBySize(data.gameBoard, data.pos, data.actionOption, 0)
 
-            elif data.actionRuleOption1 == 4:  # remove go rule
+            elif data.actionRule[1] == 4:  # remove go rule
                 return self.actionObjectByGo(data.gameBoard, data.pos, 0)
 
             else:
@@ -126,16 +126,16 @@ class ActionRule(object):
     # actionRuleNum, actionRuleOption1, actionRuleOption2, gameBoard, dataBoard, pos
     def changeObject(self, data):
         try:
-            if data.actionRuleOption2 > len(data.gameBoard):
+            if data.actionOption > len(data.gameBoard):
                 return GAME_ERROR
 
-            if 1 <= data.actionRuleOption1 <= 3:  # remove size or othello
-                if data.actionRuleOption2 == 0:  # othello
+            if 1 <= data.actionRule[1] <= 3:  # remove size or othello
+                if data.actionOption == 0:  # othello
                     return self.actionObjectByOthello(data.gameBoard, data.pos, data.gameBoard[data.pos[0]][data.pos[1]])
                 else:  # size
-                    return self.actionObjectBySize(data.gameBoard, data.pos, data.actionRuleOption2, data.gameBoard[data.pos[0]][data.pos[1]])
+                    return self.actionObjectBySize(data.gameBoard, data.pos, data.actionOption, data.gameBoard[data.pos[0]][data.pos[1]])
 
-            elif data.actionRuleOption1 == 4:  # remove go rule
+            elif data.actionRule[1] == 4:  # remove go rule
                 return self.actionObjectByGo(data.gameBoard, data.pos, data.gameBoard[data.pos[0]][data.pos[1]])
 
             else:

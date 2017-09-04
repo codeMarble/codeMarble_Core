@@ -23,24 +23,24 @@ class EndingRule(object):
     # objectNum:제거확인object, pivotCnt:pivotCount(<=), direction:actionRule과 동일, count:정렬개수
     # 1(me), 2(you), 3(draw), 0(pass)
     def checkEndingRule(self, data):
-        if data.endingRuleNumber is 1:
+        if data.endingRule is 1:
             return self.checkRemoveObject(data)
-        elif data.endingRuleNumber is 2:
+        elif data.endingRule is 2:
             return self.checkGomoku(data)
-        elif data.endingRuleNumber is 3:
+        elif data.endingRule is 3:
             return self.checkCountObject(data)
         else:
             return GAME_ERROR
 
     def checkRemoveObject(self, data):
-        pivotObject, pivotCnt = data.endingRuleOption
+        pivotObject, pivotCnt = data.endingOption
         objectCnt = sum([gameBoardRow.count(pivotObject) for gameBoardRow in data.gameBoard])
 
         return objectCnt <= pivotCnt
 
     def checkGomoku(self, data):
         # [direction, count]
-        gomokuDirection, gomokuCount = data.endingRuleOption
+        gomokuDirection, gomokuCount = data.endingOption
 
         pi, pj = data.pos
 
