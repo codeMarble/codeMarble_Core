@@ -13,7 +13,7 @@ from errorCode import *
 
 
 class Execution(object):
-    def __init__(self, limitTime=1000):
+    def __init__(self, limitTime=2000):
         self.limitTime = limitTime
 
 
