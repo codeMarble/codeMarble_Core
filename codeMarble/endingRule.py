@@ -9,7 +9,7 @@
 import os
 import sys
 import itertools
-from collections import Counter
+import numpy as np
 
 from errorCode import *
 
@@ -30,7 +30,7 @@ class EndingRule(object):
         elif data.endingRule is 3:
             return self.checkCountObject(data)
         else:
-            return GAME_ERROR
+            return SERVER_ERROR
 
     def checkRemoveObject(self, data):
         pivotObject, pivotCnt = data.endingOption
@@ -51,7 +51,7 @@ class EndingRule(object):
         elif gomokuDirection is 3:
             directions = [[-1, 0], [1, 0], [0, 1], [0, -1], [-1, 1], [1, 1], [1, -1], [-1, -1]]
         else:
-            return GAME_ERROR
+            return SERVER_ERROR
 
         # me, you, draw, pass
         for direction in directions:
@@ -73,16 +73,16 @@ class EndingRule(object):
             return self.result['pass']
 
     def checkCountObject(self, data):
-        objectCounter = Counter(list(itertools.chain.from_iterable(data.gameBoard)))
+        arr = np.array(list(itertools.chain.from_iterable(data.gameBoard)))
 
-        if objectCounter[0] != 0:
+        if arr[arr == 0].size != 0:
             return self.result['pass']
 
-        object1, object2 = objectCounter.most_common(2)
+        object1, object2 = arr[arr > 0].size, arr[arr < 0].size
 
-        if object1[1] < object2[1]:
+        if object1 > object2:
             return self.result['me']
-        elif object1[1] > object2[1]:
+        elif object1 < object2:
             return self.result['you']
         else:
             return self.result['draw']

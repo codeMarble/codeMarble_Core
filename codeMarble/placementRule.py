@@ -23,21 +23,28 @@ class PlacementRule(object):
     def checkPlacementRule(self, data):
         try:
             interResult = self.applyPlacementRule(data)
-            destinationState = data.gameBoard[data.pos[0]][data.pos[1]]
 
-            if abs(destinationState) > 3:
-                interResult = self.applyExtraExistRule(data)
+            if interResult is True:
+                destinationState = data.gameBoard[data.pos[0]][data.pos[1]]
 
-            elif destinationState > 0:
-                interResult = self.applyAllyExistRule(data)
+                if abs(destinationState) > 3:
+                    interResult = self.applyExtraExistRule(data)
 
-            else:
-                interResult = self.applyEnemyExistRule(data)
+                elif destinationState > 0:
+                    interResult = self.applyAllyExistRule(data)
+
+                elif destinationState < 0:
+                    interResult = self.applyEnemyExistRule(data)
+
+                else:
+                    data.gameBoard[data.pos[0]][data.pos[1]] = data.objectNum
 
             return interResult
 
         except Exception as e:
-            return SERVER_ERROR
+	        print e, sys.exc_info()[2].tb_lineno
+
+	        return SERVER_ERROR
 
 
     def applyPlacementRule(self,data):
@@ -48,7 +55,7 @@ class PlacementRule(object):
 
         try:
             row, col = data.pos
-            if row < 0 or row >= matrixSize or col < 0 or col >= matrixSize:  # check placement position is in gameBoard
+            if (row < 0 or row >= matrixSize) or (col < 0 or col >= matrixSize):  # check placement position is in gameBoard
                 return OUT_OF_RANGE + '(%d,%d)' % (row, col)
 
         except Exception as e:
@@ -60,10 +67,10 @@ class PlacementRule(object):
             direct2 = [[1, 1], [-1, 1], [-1, -1], [1, -1]]
 
 
-            if data.placementOption[data.objectNum - 1] is 0:
+            if data.placementOption[data.objectNum - 1][0] is 0:
                 return True
 
-            elif data.placementOption[data.objectNum - 1] < 3:
+            elif data.placementOption[data.objectNum - 1][0] < 3:
                 direct = direct1 if data.placementOption is 1 else direct2
 
             else:
@@ -106,7 +113,7 @@ class PlacementRule(object):
                     return MISS_POSITION + '(%d,%d)'%(row, col)
 
                 else:
-                    return GAME_ERROR
+                    return SERVER_ERROR
 
             else:  # check each object's move path and size
                 if rowMovingSize != data.placementOption[data.objectNum - 1][1] or \
@@ -152,7 +159,7 @@ class PlacementRule(object):
                 data.gameBoard[data.pastPos[0]][data.pastPos[1]] = 0
 
         else:
-            return GAME_ERROR
+            return SERVER_ERROR
 
         return True
 
@@ -173,15 +180,18 @@ class PlacementRule(object):
                 data.gameBoard[data.pastPos[0]][data.pastPos[1]] = 0
 
         else:
-            return GAME_ERROR
+            return SERVER_ERROR
 
         return True
 
 
     def splitUserOutput(self, data):
+        if data.message is None or len(data.message) is 0:
+            return False
+
         try:
             if data.placementRule is 1:
-                if data.userObjectCount is 1:
+                if data.objectCount is 1:
                     data.pos = [int(i) for i in data.message.split()]
                     data.objectNum = 1
 
@@ -200,7 +210,10 @@ class PlacementRule(object):
             else:
                 return False
 
+            return True
+
         except Exception as e:
+            print e, sys.exc_info()[2].tb_lineno
             return False
 
 

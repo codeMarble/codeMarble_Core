@@ -18,8 +18,8 @@ from scriptTemplate import UserRule
 
 
 class GameManager(object):
-    def __init__(self, challenger, champion, placementRule, placementOption, existRule, existOption,
-                 actionRule, actionOption, endingRule, endingOption, gameBoard, dataBoard, scriptPath=None, problemIndex='scriptTemplate'):
+    def __init__(self, challenger, champion, placementRule, placementOption, existRule, existOption, actionRule,
+                 actionOption, endingRule, endingOption, objectCount, gameBoard, dataBoard, scriptPath=None, problemIndex='scriptTemplate'):
         if type(challenger) is not UserProgram and type(champion) is not UserProgram:
             raise TypeError
 
@@ -31,8 +31,8 @@ class GameManager(object):
         self.challenger = challenger
         self.champion = champion
 
-        self.data = GameData(placementRule, placementOption, existRule, existOption, actionRule, actionOption,
-                             endingRule, endingOption, gameBoard, dataBoard)
+        self.data = GameData(objectCount, placementRule, placementOption, existRule, existOption, actionRule,
+                             actionOption, endingRule, endingOption, gameBoard, dataBoard)
 
         self.limitTime = 2000
 
@@ -43,145 +43,121 @@ class GameManager(object):
         self.rules = UserRule()
         self.execution = Execution()
 
+        self.addData('  ')
+
 
     def playGame(self):
-        flag = False    # Flase : champ turn, True: challenger turn
-        userList = [[self.champion, 0], [self.challenger, 0]]
+        try:
+            flag = False    # Flase : champ turn, True: challenger turn
+            userList = [[self.champion, 0], [self.challenger, 0]]
 
-        self.compileUserCode()
+            self.compileUserCode()
+            for _ in range((len(self.data.gameBoard) + 1)**2):
+                self.makeInputData()
 
-        for _ in range(len(self.gameBoard)*len(self.gameBoard)*2):
-            message, time, isSuccess = self.execution.executeProgram(userList[flag][0].play())  # run user program
-            self.data.message = message
+                message, time, isSuccess = self.execution.executeProgram(userList[flag][0].play(), userList[flag][0].savePath)  # run user program
+                self.data.message = message
 
-            if not isSuccess:
-                userList[flag][1] += 1
-                result = message
+                if not isSuccess:
+                    userList[flag][1] += 1
+                    result = message
 
-            else:
-                result = self.rules.checkPlacementRule(self.data)
-
-                if type(result) is not str:
+                else:
                     originalGameBoard = deepcopy(self.data.gameBoard)
                     originalDataBoard = deepcopy(self.data.dataBoard)
 
-                    result = self.rules.checkActionRule(self.data)
+                    interResult = self.rules.checkPlacementRule(self.data)
 
-                    if type(result) is not str:
-                        result = self.rules.checkEndingRule(self.data)
+                    if interResult is True:
+                        interResult = self.rules.checkActionRule(self.data)
 
-                        if type(result) is int and result:
-                            if result is 1:
-                                return 'win' if flag else 'lose'
+                        if interResult is True:
+                            interResult = self.rules.checkEndingRule(self.data)
 
-                            elif result is 2:
-                                return 'lose' if flag else 'win'
+                            if 0 < interResult < 4:
+                                print interResult, flag
+                                if interResult is 1:
+                                    result = 'win' if flag else 'lose'
 
-                            else:
-                                return 'draw'
+                                elif interResult is 2:
+                                    result = 'lose' if flag else 'win'
 
-                if result == SERVER_ERROR or result == GAME_ERROR:
-                    return result
+                                elif interResult is 3:
+                                    result = 'draw'
 
-                elif type(result) is str:
-                    userList[flag][1] += 1
-                    self.data.gameBoard = deepcopy(originalGameBoard)
-                    self.data.dataBoard = deepcopy(originalDataBoard)
+                                self.changePlayerNBoard(flag, message)
+                                break
 
-            if userList[flag][1] > 2:
-                return 'lose' if flag else 'win'
+                    if interResult == SERVER_ERROR:
+                        result = interResult
+                        break
 
-            # change boarad setting (champ <-> challenger)
-            self.data.resetData()
-            self.changePlayerNBoard(flag, result)
-            flag = (not flag)
+                    elif type(interResult) is str:
+                        result = interResult
+                        userList[flag][1] += 1
+                        self.data.gameBoard = deepcopy(originalGameBoard)
+                        self.data.dataBoard = deepcopy(originalDataBoard)
 
-        return 'draw'
+                if userList[flag][1] > 2:
+                    result = 'lose' if flag else 'win'
+                    break
+
+                # change boarad setting (champ <-> challenger)
+                self.data.resetData()
+                self.changePlayerNBoard(flag, message)
+                flag = (not flag)
+
+            else:
+                result = 'draw'
+
+            return result, self.positionData, self.boardData
+
+        except Exception as e:
+            print e
+            return SERVER_ERROR, self.positionData, self.boardData
 
 
     def changePlayerNBoard(self, flag, result):
         if flag :   # if challenger
-            for i in range(len(self.gameBoard)):
-                for k in range(len(self.gameBoard[0])):
-                    self.gameBoard[i][k] = -(self.gameBoard[i][k])
-
             self.addData(result)
+
+            for i in range(len(self.data.gameBoard)):
+                for k in range(len(self.data.gameBoard[0])):
+                    self.data.gameBoard[i][k] *= -1
+
 
         else:   # if champ
-            self.addData(result)
+            for i in range(len(self.data.gameBoard)):
+                for k in range(len(self.data.gameBoard[0])):
+                    self.data.gameBoard[i][k] *= -1
 
-            for i in range(len(self.gameBoard)):
-                for k in range(len(self.gameBoard[0])):
-                    self.gameBoard[i][k] = -(self.gameBoard[i][k])
+            self.addData(result)
 
 
     def addData(self, result):
-        self.positionData += str(result) + '\n'
+        self.positionData += str(result).strip() + '\n'
 
         temp = ''
-        for line in self.gameBoard:
+        for line in self.data.gameBoard:
             for i in line:
                 temp += (str(i) + ' ')
 
             temp += '\n'
 
+        self.boardData += temp
+
 
     def compileUserCode(self):
-        self.execution.executeProgram(self.challenger.compile())
-        self.execution.executeProgram(self.champion.compile())
+        self.execution.executeProgram(self.challenger.compile(), self.challenger.savePath)
+        self.execution.executeProgram(self.champion.compile(), self.champion.savePath)
 
 
-if __name__ == '__main__':
-    import json
-    import argparse
+    def makeInputData(self):
+        with open(self.challenger.inputPath, 'w') as fp:
+            temp = ''
+            for line in self.data.gameBoard:
+                for i in line:
+                    temp += (str(i) + ' ')
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--path', type=str, default=os.getcwd(), help='input file(code&rule) directory')
-    parser.add_argument('--script', type=str, default='scriptTemplate', help='input script file name')
-    parser.add_argument('--rule', type=str, default='rule', help='input rule file name')
-    parser.add_argument('--player1', type=str, default='p1', help='input champion code file name')
-    parser.add_argument('--player2', type=str, default='p2', help='input challenger code file name')
-
-    parsed, unparsed = parser.parse_known_args()
-
-    if len(unparsed) > 0:
-        print("check your argument. if you want help, use 'codemarble --help'.")
-
-    fileInDir = os.listdir(parsed.path)
-    fileName = [parsed.script, parsed.rule, parsed.player1, parsed.player2]
-
-    for i in fileInDir:
-        for k in fileName:
-            if k in i:
-                break
-    else:
-        print('you inputted wrong data.')
-        os.exit(0)
-
-    with open(os.path.join(parsed.path, parsed.script+'.grd')) as fp:
-        ruleData = fp.read()
-
-    ruleData = json.load(ruleData)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                temp += '\n'
+            fp.write(temp)
